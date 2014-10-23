@@ -1,0 +1,43 @@
+Logged in as : <%= User.find(session[:user_id]).username %>&nbsp;
+	<br/>
+	<%= link_to("HomePage", {:action => 'admin_page'}) %>
+	<%= link_to("View Monthly Records", {:action => 'user_record'}) %>
+	<%= link_to("Logout", {:action => 'destroy'}) %>
+	<h2>Leave Records of Employees</h2>
+
+	Search by Status: 
+	<%= form_tag "/sessions/status_search", method: "post" do %>   <%# 2nd form for status filter -%>
+   	  <%= select_tag :param_status, options_for_select(Leave.find(:all, :conditions => ["status  != 'Pending'"], :group => 'status').map{|b| [b.status, b.status]}, params[:param_status]), :prompt => 'Select Status' , :onchange => 'submit()' %>
+      <% end %> 
+
+      Search by Name: 
+      <%= form_tag "/sessions/name_search", method: "post" do %>   <%# 2nd form for status filter -%>
+   	  	<%= select_tag :param_user, options_for_select(User.find(:all, :conditions => ["id!= #{session[:user_id]} && admin = 'false'"] ).map{|b| [ b.username, b.id ]}, params[:param_user]) , :prompt => 'Select' , :onchange => 'submit()' %>
+      <% end %>
+      <table border="1">
+		<thead>
+			<th>Name</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Description</th>
+			<th>Status</th>
+			<th>Total Days</th>
+			<th>Edit</th>
+		</thead>
+		<tbody>
+			<% if @leave %>
+	     	<% @leave.each do |l| %>
+	     	<tr>
+	     		<td><%= User.find(l.user_id).username %></td>
+	     		<td><%= l.start_date %></td>
+	     		<td><%= l.end_date %></td>
+	     		<td><%= l.description %></td>
+	     		<td><%= l.status %></td>
+	     		<td><%= l.total_days %></td>
+	     		<td><%= button_to'Edit', { :controller => 'leaves' , :action => 'edit', :id => l.id } %></td>
+	     	</tr>
+			<% end %> <!-- End of if -->
+			<% end %> <!-- End of Each -->
+		</tbody>
+	</table>
+<%= will_paginate @leave %>

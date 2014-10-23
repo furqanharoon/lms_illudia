@@ -1,0 +1,28 @@
+Logged in as : <%= User.find(session[:user_id]).username %>&nbsp;
+	<br/>
+	<%= link_to("Homepage",{:action => 'admin_page'}) %>
+	<%= link_to("Add new User", {:controller => 'users', :action => 'new'}) %>
+	<br/>
+	<%= link_to("View Monthly Records", {:action => 'user_record'}) %>
+	<%= link_to("View Employee Quota", {:action => 'getQuota'}) %>
+	<%= link_to("Logout", {:action => 'destroy'}) %>
+
+<table class="table">
+	<thead>
+		<th>Name</th>
+		<th>Allowed Leaves(Per Year)</th>
+		<th>Leaves Avail</th>
+		<th>Leaves Exceed</th>
+	</thead>
+	<tbody>
+		
+     	<% @quota.each do |q| %>
+     	<tr>
+     		<td><%= User.find(q.user_id).username %></td>
+     		<td>15</td>
+     		<td><%= q.avail %></td>
+     		<td><%= q.exceed %></td>
+     	</tr>
+     	<% end %>
+	</tbody>
+</table>

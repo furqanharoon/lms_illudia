@@ -1,0 +1,31 @@
+<%= link_to("Goto Homepage", {:action => 'admin_page'}) %>
+<br/>
+<br/>
+<%= link_to("Logout", {:action => 'destroy'}) %>
+<br/>
+Select Username:
+<%= form_tag "/sessions/user_record", method: "post" do %>
+
+	<%= select_tag 'param_user', options_for_select(@users.collect{ |u| [u.username, u.id] }) , :prompt => 'Select User'  %>
+	<br/>
+	Select Month:<br/> <%= select_tag(:month, options_for_select([['January', 'January'], ['February', 'February'], ['March', 'March'], ['April', 'April'], ['May', 'May'],['June', 'June'],['July', 'July'],['August', 'August'],['September', 'September'],['October', 'October'],['November', 'November'],['December', 'December']], selected: :month ), :prompt => 'Select Month') %>
+	<br/>
+	<%= submit_tag "Submit" %>
+<% end %>
+
+<% if !@by_month.blank? %>
+	<table border="1">
+		<thead>
+			<th>Username</th>
+			<th>Month</th>
+			<th>Total Leaves</th>
+		</thead>
+		<tbody>
+			<tr>
+	     		<td><%= User.find(@uname).username %></td>
+	     		<td><%= @mname %></td>
+	     		<td><%= @by_month %></td>
+	     	</tr>
+		</tbody>
+	</table>
+<% end %>

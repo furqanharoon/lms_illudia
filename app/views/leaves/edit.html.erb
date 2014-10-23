@@ -1,0 +1,17 @@
+<h1>Leaves Edit Form</h1>
+
+<%= form_for(:leave , :method => 'post' , :url =>{:action => 'update', :id => @leave.id}) do |f| %>
+	
+	<%= f.hidden_field :user_id , :readonly => 'true' %>
+	<p><label for="start_date">Start Date</label>:
+	<%= f.date_select :start_date %></p>
+	<p><label for="end_date">End Date</label>:
+	<%= f.date_select :end_date %></p>
+	<p><label for="description">Description</label><br/>
+	<%= f.text_area :description %></p>
+	<p><label for="total_days">Total Days</label><br/>
+	<%= f.text_field :total_days %></p>
+	<p><label for="status">Status</label><br/>
+	<%= f.select :status, options_for_select([[@leave.status, @leave.status], "Approved", "Disapproved", "Pending"]) %></p>
+	<%= submit_tag "Save changes" %>
+<% end %>

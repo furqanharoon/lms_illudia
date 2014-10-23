@@ -1,0 +1,69 @@
+<h1>Employee Homepage</h1>
+<% if @leave %>
+	Logged in as : <%= User.find(session[:user_id]).username %>&nbsp;
+	<%= link_to("Logout", {:action => 'destroy'}) %>
+	<%= link_to("Apply for Leave", {:controller => 'leaves', :action => 'new'}) %> <br/>
+	<%= link_to("View Monthly Record", {:controller => 'sessions', :action => 'month_record'}) %> <br/>
+	
+		<%= form_tag "/sessions/index", method: "post" do %>   <%# 2nd form for status filter -%>
+	   	  <%= select_tag :param_name, options_for_select(Leave.find(:all, :conditions => ["status  != 'Pending'"], :group => 'status').map{|b| [b.status, b.status]}, params[:param_name]), :prompt => 'Select Status' , :onchange => 'submit()' %>
+	      <% end %> 
+<% end %>
+	<h2>Leave Record</h2>
+	<table border="1">
+		<thead>
+			<th>Name</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Description</th>
+			<th>Status</th>
+			<th>Total Days
+		</thead>
+		<tbody>
+			<% if @leave %>
+	     	<% @leave.each do |l| %>
+	     	<tr>
+	     		<td><%= User.find(l.user_id).username %></td>
+	     		<td><%= l.start_date %></td>
+	     		<td><%= l.end_date %></td>
+	     		<td><button type="button" name="expand" id ="bt1">&or;</button></td>
+	     		<td><%= l.status %></td>
+	     		<td><%= l.total_days %></td>
+	     	</tr>
+	     	
+	     	<tr style="display:none" id ="id1">
+    		  <td colspan="99">Description:<%= l.description %></td>
+  		    </tr>
+
+  		    <% end %> <!-- End of if -->
+			<% end %> <!-- End of Each -->
+		</tbody>
+	</table>
+<% else %>
+	<% redirect_to :action => 'new' and return %>
+
+<% end %>
+
+ <script type="text/javascript">
+ jQuery(document).ready(function($) {
+
+      function expandFunc() {
+        $(this).parent().parent().next().fadeIn('slow');
+        //$(this).html('Reduce');
+        $(this).html('&and;');
+        $(this).unbind('click');
+        $(this).click(reduceFunc);
+      }
+
+      function reduceFunc() {
+        $(this).parent().parent().next().fadeOut('slow');
+        //$(this).html('Expand');
+        $(this).html('&or;');
+        $(this).unbind('click');
+        $(this).click(expandFunc);
+      }
+
+      $('button[name="expand"]').click(expandFunc);
+
+ 	    });
+</script>

@@ -1,0 +1,136 @@
+<%= link_to("Logout", {:controller => 'sessions' , :action => 'destroy'}) %> &nbsp; &nbsp;
+<%= link_to("Apply for Leave", {:controller => 'leaves', :action => 'new'}) %> <br/><br/>
+<%= link_to("View Monthly Record", {:controller => 'sessions', :action => 'month_record'}) %> <br/>
+
+<h1>Leave Submission Form</h1>
+
+<div class="page-content">
+  <%= form_for :leave , :html => {:name => "leave"} , :url=>{:controller => "leaves" , :action => "create"} do | f | %>
+  <div class="row">
+    <input type="hidden" name="leave[user_id]" value="<%= User.find(session[:user_id]).id %>">
+    <div class="col-sm-1" >Username </div>
+    <div class="col-sm-2" ><label><%= User.find(session[:user_id]).username %></label> </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-1" >Start Date</div>
+    <div class="col-sm-2" ><input type="text"  id="leave_start_date" data-behaviour="datepicker"  class="form-control datepicker" name="leave[start_date]" > </div>
+    <div style ="display: none;" id="sdate" class="form-group has-error">
+      <label class="control-label" for="inputError1">Start Date Cannot be Blank</label>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-1" >End Date</div>
+    <div class="col-sm-2" ><input type="text" id="leave_end_date"  data-behaviour="datepicker"  class="form-control datepicker"  name="leave[end_date]" > </div>
+    <div style ="display: none;" id="edate" class="form-group has-error">
+      <label class="control-label" for="inputError1">End Date Cannot be Blank</label>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-1" >Description </div>
+    <div class="col-sm-2" ><textarea type="textarea"   class="form-control"  name="leave[description]" ></textarea> 
+    </div>
+    <div style ="display: none;" id="des" class="form-group has-error">
+      <label class="control-label" for="inputError1">Leave Description Cannot be Blank</label>
+    </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-sm-1" >Total Days </div>
+    <div class="col-sm-2" ><input type="number" class="form-control"  name="leave[total_days]" > </div>
+    
+    <div style ="display: none;" id="tdays" class="form-group has-error">
+      <label id="lb1" class="control-label" for="inputError1">Total Days Cannot be Blank</label>
+    </div> 
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-sm-1"><%= f.submit "Apply for Leave" , :class => "btn btn-primary" ,:onclick => "return validate_form();" %></div>
+  </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+function validate_form()
+  {
+    var check = 0;
+    var tdays = document.forms["leave"]["leave[total_days]"].value;
+    var sdate = document.forms["leave"]["leave[start_date]"].value;
+    var edate = document.forms["leave"]["leave[end_date]"].value;
+    var des = document.forms["leave"]["leave[description]"].value;
+    if(tdays == "")
+    {
+      check = check + 1;
+      var lb = document.getElementById("lb1");
+      lb.innerHTML="Total days cannot be blank";
+      document.getElementById("tdays").style.display = "block";
+    }
+    else if(isNaN(tdays))
+    {
+      check = check + 1;
+      var lb = document.getElementById("lb1");
+      lb.innerHTML="Total days must be number";
+      document.getElementById("tdays").style.display = "block";
+    }
+    else
+    {
+      document.getElementById("tdays").style.display = "none";
+    }
+    
+    if(sdate == "")
+    {
+      check = check + 1;
+      document.getElementById("sdate").style.display = "block";
+    }
+    else
+    {
+      document.getElementById("sdate").style.display = "none";
+
+    }
+    if(edate == "")
+    {
+      check = check + 1;
+      document.getElementById("edate").style.display = "block";
+    }
+    else
+    {
+      document.getElementById("edate").style.display = "none";
+    }
+
+    if(des == "")
+    {
+      check = check + 1;
+      document.getElementById("des").style.display = "block";
+
+    }
+    else
+    {
+      document.getElementById("des").style.display = "none";
+
+    }
+    if(check!=0)
+      return false;
+    else
+      return true;
+  }
+
+    $(document).ready(function()
+    {
+      $("#leave_start_date").datepicker({format : "yyyy-mm-dd",startDate:new Date()}).on("changeDate",function(ev)
+      {
+        $("#leave_end_date").datepicker("setStartDate",new Date($("#leave_start_date").val()));   
+           
+      });
+      $("#leave_end_date").datepicker({format : "yyyy-mm-dd",startDate:new Date($("#leave_start_date").val())});   
+    });
+    $("#leave_total_days").click (function()
+    {
+      var a = $("#leave_start_date").datepicker('getDate').getTime(),
+        b = $("#leave_end_date").datepicker('getDate').getTime(),
+        c = 24*60*60*1000,
+        diffDays = Math.round(Math.abs((a - b)/(c)));
+        $('#diff').html(diffDays).parent().fadeIn('fast');
+    });
+  </script>

@@ -1,0 +1,61 @@
+<h1>Admin Homepage</h1>
+<% if @leave %>
+	Logged in as : <%= User.find(session[:user_id]).username %>&nbsp;
+	<br/>
+	<%= link_to("Homepage",{:action => 'admin_page'}) %>
+	<%= link_to("Add new User", {:controller => 'users', :action => 'new'}) %>
+	<br/>
+	<%= link_to("View Monthly Records", {:action => 'user_record'}) %>
+	<%= link_to("View Employee Quota", {:action => 'getQuota'}) %>
+	<%= link_to("Logout", {:action => 'destroy'}) %>
+	<h2>Leave Records of Employees</h2>
+
+	Search by User: 
+	<%= form_tag "/sessions/admin_page", method: "post" do %>
+	<%= select_tag 'param_user', options_for_select(@users.collect{ |u| [u.username, u.id] }) , :prompt => 'Select User' , :onchange => 'submit()' %>
+	<% end %>
+
+	Search by Status: 
+	<%= form_tag "/sessions/admin_page", method: "post" do %>
+		<%= select_tag 'param_status', options_for_select(@leaves.collect{ |l| [l.status, l.status] }) , :prompt => 'Select Status' , :onchange => 'submit()' %>
+	<% end %>
+	<br/>
+
+<table class="table table-bordered">
+	<thead align="center">
+		<th>Name</th>
+		<th>Start Date</th>
+		<th>End Date</th>
+		<th>Description</th>
+		<th>Status</th>
+		<th>Total Days</th>
+		<% if @pend != 1 %>
+			<th>Edit</th>
+		<% end %>
+		<th colspan="2">Action</th>
+		
+	</thead>
+	<tbody>
+		<% if @leave %>
+     	<% @leave.each do |l| %>
+     	<tr>
+     		<td><%= User.find(l.user_id).username %></td>
+     		<td><%= l.start_date %></td>
+     		<td><%= l.end_date %></td>
+     		<td><%= l.description %></td>
+     		<td><%= l.status %></td>
+     		<td><%= l.total_days %></td>
+     		<% if @pend != 1 %>
+     		<td><%= button_to'Edit', { :controller => 'leaves' , :action => 'edit', :id => l.id } %></td>
+     		<% end %>
+     		<td><%= link_to '', {:controller => 'leaves',:action =>'leave_action',:id => l.id,:verify=>"yes", :uid => l.user_id , :tdays => l.total_days },:class =>'glyphicon glyphicon-ok success' , :style=>'color:green;' %></td>
+     		<td><%= link_to '',{:controller => 'leaves',:action =>'leave_action',:id => l.id, :verify=>"no" , :uid => l.user_id , :tdays => l.total_days },:class =>'glyphicon glyphicon-remove', :style=>'color:red;' %></td>
+     	</tr>
+		<% end %> <!-- End of if -->
+		<% end %> <!-- End of Each -->
+	</tbody>
+</table>
+<%= will_paginate @leave, :params => {:param_status => params[:param_status] , :param_user => params[:param_user]} ,:method => 'post' , renderer: BootstrapPagination::Rails %>
+<% else %>
+	<% redirect_to :action => 'new' and return %>
+<% end %>

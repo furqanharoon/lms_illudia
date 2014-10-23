@@ -1,0 +1,153 @@
+<h1>User sign-up Form</h1>
+<%= link_to("Homepage",{:controller => 'sessions', :action => 'admin_page'}) %>
+<%= link_to("Add new User", {:controller => 'users', :action => 'new'}) %>
+<br/>
+<%= link_to("View Monthly Records", {:controller => 'sessions', :action => 'user_record'}) %>
+<%= link_to("View Employee Quota", {:controller => 'sessions', :action => 'getQuota'}) %>
+<%= link_to("Logout", {:controller => 'sessions', :action => 'destroy'}) %>
+<div class="page-content">
+  <%= form_for :user , :html => {:name => "user"} , :url=>{:controller => "users" , :action => "create"} do | f | %>
+  	<div class="row">
+    	<div class="col-sm-1" >Username</div>
+    	<div class="col-sm-2" ><input type="text"  id="user_username"  name="user[username]" > </div>
+    	<div style ="display: none;" id="uname" class="form-group has-error">
+      		<label class="control-label" for="inputError1">Username Cannot be Blank</label>
+    	</div>
+  	</div>
+  	<br>
+  	<div class="row">
+    	<div class="col-sm-1" >Email</div>
+    	<div class="col-sm-2" ><input type="email" id="user_email" name="user[email]" > </div>
+    	<div style ="display: none;" id="email" class="form-group has-error">
+      		<label class="control-label" id ="lb1" for="inputError1">Email Cannot be Blank</label>
+    	</div>
+  	</div>
+  	<br>
+  	<div class="row">
+    	<div class="col-sm-1" >Login </div>
+    	<div class="col-sm-2" ><input type="text" name="user[login]" ></div>
+    	<div style ="display: none;" id="login" class="form-group has-error">
+      		<label class="control-label" for="inputError1">Login Cannot be Blank</label>
+    	</div>
+  	</div>
+  	<br/>
+  	<div class="row">
+    	<div class="col-sm-1" >Password </div>
+    	<div class="col-sm-2" ><input type="password" class="form-control"  name="user[password]" > </div>
+    	<div style ="display: none;" id="pwd" class="form-group has-error">
+      		<label class="control-label" for="inputError1">Password Cannot be Blank</label>
+    	</div> 
+  	</div>
+  <br/>
+
+   <div class="row">
+    	<div class="col-sm-1" >Make Admin? </div>
+    	<div class="col-sm-2" >Yes  <input type="radio"   name="user[admin]" value ="1" >
+    		<br/>
+    		No  <input type="radio" name="user[admin]" value ="0" > 
+		</div>
+    	<div style ="display: none;" id="adm" class="form-group has-error">
+      		<label class="control-label" for="inputError1">You must select one option</label>
+    	</div> 
+  	</div>
+  	<br/>
+  	<div class="row">
+    	<div class="col-sm-1"><%= f.submit "Add User" , :class => "btn btn-primary" ,:onclick => "return validate_form();" %></div>
+  	</div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  function validate_form()
+  {
+  	var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
+    var check = 0;
+    var uname = document.forms["user"]["user[username]"].value;
+    var email = document.forms["user"]["user[email]"].value;
+    var login = document.forms["user"]["user[login]"].value;
+    var pwd = document.forms["user"]["user[password]"].value;
+    var admin = document.forms["user"]["user[admin]"].value;
+    
+    if(email == "")
+    {
+      check = check + 1;
+      var lb = document.getElementById("lb1");
+      lb.innerHTML="Total days cannot be blank";
+      document.getElementById("email").style.display = "block";
+    }
+    else if(!re.test(email))
+    {
+      check = check + 1;
+      var lb = document.getElementById("lb1");
+      lb.innerHTML="Invalid Email!";
+      document.getElementById("email").style.display = "block";
+    }
+    else
+    {
+      document.getElementById("email").style.display = "none";
+    }
+    
+    if(uname == "")
+    {
+      check = check + 1;
+      document.getElementById("uname").style.display = "block";
+    }
+    else
+    {
+      document.getElementById("uname").style.display = "none";
+
+    }
+    if(login == "")
+    {
+      check = check + 1;
+      document.getElementById("login").style.display = "block";
+    }
+    else
+    {
+      document.getElementById("login").style.display = "none";
+    }
+
+    if(pwd == "")
+    {
+      check = check + 1;
+      document.getElementById("pwd").style.display = "block";
+
+    }
+    else
+    {
+      document.getElementById("pwd").style.display = "none";
+
+    }
+    if(admin == null)
+    {
+    	document.getElementById("adm").style.display = "block";
+
+    }
+    else
+    {
+    	document.getElementById("adm").style.display = "none";
+
+    }
+    if(check == 0)
+      return false;
+    else
+      return false;
+  }
+  $(document).ready(function()
+  {
+    $("#leave_start_date").datepicker({format : "yyyy-mm-dd",startDate:new Date()}).on("changeDate",function(ev)
+    {
+      $("#leave_end_date").datepicker("setStartDate",new Date($("#leave_start_date").val()));   
+         
+    });
+    $("#leave_end_date").datepicker({format : "yyyy-mm-dd",startDate:new Date($("#leave_start_date").val())});   
+  });
+  $("#leave_total_days").click (function()
+  {
+    var a = $("#leave_start_date").datepicker('getDate').getTime(),
+      b = $("#leave_end_date").datepicker('getDate').getTime(),
+      c = 24*60*60*1000,
+      diffDays = Math.round(Math.abs((a - b)/(c)));
+      $('#diff').html(diffDays).parent().fadeIn('fast');
+  });
+</script>

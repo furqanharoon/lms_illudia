@@ -1,0 +1,21 @@
+<h1>Edit Movie Record</h1>
+<%= @movie.id %>
+	<%= link_to("Goto Index",{:action => 'index'}) %>
+	<%= form_for(:movie , :method => 'post' , :url =>{:action => 'update',:id => @movie.id}) do |f| %>
+		<p>
+			Title:
+			<%= f.text_field(:title) %>
+			
+		</p>
+		<p>
+			Genre:
+			<%= f.select :genre , options_for_select([[@movie.genre, @movie.genre], "Action", "Crime", "Thriller", "Comedy", "Mystery"]) %>
+		</p>
+		<p>
+			Release Date
+			<%= f.date_select :release_date %>
+		</p>
+		<p>
+			<%= submit_tag("Update Movie Recod") %>
+		</p>
+<% end %>

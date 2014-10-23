@@ -1,0 +1,46 @@
+  <header>
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+  		<div class="container">
+    		<div class="navbar-header">
+    			<a class="navbar-brand" href="/">Home</a>
+    		</div>
+  		
+  		</div>
+
+	</nav>
+</header>
+
+
+
+
+
+
+<%= link_to("Add a new movie", {:action=>'new'}) %><br/>
+<a id="open" href="#">Open</a>
+<table border="1">
+	<tr>
+		<th>Title</th>
+		<th>Genre</th>
+		<th>Release Date</th>
+		<th>Action</th>
+	</tr>
+	<% @movie.each do |e| %>
+		<tr>
+			<td><%= e.title %></td>
+			<td><%= e.genre %></td>
+			<td><%= e.release_date %></td>
+			<td><%= link_to("Edit",{:action => 'edit',:id => e.id}) %></td>
+		</tr>
+	<% end %>
+</table>
+<br/>
+<script>
+	$(document).ready(function(){
+		$("#open").click(function()
+		{
+			alert("Hello");
+
+		});
+
+	});
+</script>

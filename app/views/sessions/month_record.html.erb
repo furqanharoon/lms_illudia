@@ -1,0 +1,23 @@
+<%= link_to("Goto HomePage", {:controller => 'sessions', :action => 'index'}) %> <br/> 
+<%= link_to("Apply for Leave", {:controller => 'leaves', :action => 'new'}) %> <br/>
+<%= link_to("View Monthly Record", {:controller => 'sessions', :action => 'month_record'}) %> <br/>
+<%= link_to("Logout", {:action => 'destroy'}) %>
+<br/>
+
+
+Search Leave Record By Month: <%= form_tag "/sessions/month_record", method: "post" do %>
+	<%= select_tag(:month, options_for_select([['January', 'January'], ['February', 'February'], ['March', 'March'], ['April', 'April'], ['May', 'May'],['June', 'June'],['July', 'July'],['August', 'August'],['September', 'September'],['October', 'October'],['November', 'November'],['December', 'December']], selected: :month ), :prompt => 'Select Month' , :onchange => 'submit()') %>
+<table border="1">
+	<thead>
+		<th>Month</th>
+		<th>Total Leaves</th>
+		
+	</thead>
+	<tbody>
+		<tr>
+     		<td><%= @mname %></td>
+     		<td><%= @by_month %></td>
+     	</tr>
+	</tbody>
+</table>
+<% end %>
